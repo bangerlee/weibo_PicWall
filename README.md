@@ -4,6 +4,6 @@
 
 展示
 ====
-成功部署后，效果如下
-![效果图](http://ww2.sinaimg.cn/large/66f77025gw1dzsetvisr2j.jpg)
+成功部署后，效果如下   
+![效果图](http://ww2.sinaimg.cn/large/66f77025gw1dzsetvisr2j.jpg)   
 点击 [http://liuxiaofang.sinaapp.com](http://liuxiaofang.sinaapp.com) 查看示例
