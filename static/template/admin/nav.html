@@ -1,0 +1,85 @@
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="{{ handler.site_url }}" target="_blank">{{ handler.app_title }}</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="dropdown">
+                        <a data-target="#" href="/admin?type=pic&status=2" data-toggle="dropdown" class="dropdown-toggle"> 图片管理 <b class="caret"></b>
+                        </a>
+                        <ul id="article-menu" class="dropdown-menu">
+                            <li>
+                                <a href="/admin?type=pic&status=2">待审核图片</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/admin?type=pic&status=1">审核通过图片</a>
+                            </li>
+                            <li>
+                                <a href="/admin?type=pic&status=0">回收站</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a data-target="#" href="/admin/black?type=1" data-toggle="dropdown" class="dropdown-toggle"> 黑名单管理 <b class="caret"></b>
+                        </a>
+                        <ul id="article-menu" class="dropdown-menu">
+                            <li>
+                                <a href="/admin/black?type=1">关键词</a>
+                            </li>
+                            <li>
+                                <a href="/admin/black?type=0">用户ID</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a data-target="#" href="/admin/user/manage?status=1" data-toggle="dropdown" class="dropdown-toggle"> 用户管理 <b class="caret"></b>
+                        </a>
+                        <ul id="article-menu" class="dropdown-menu">
+                            <li>
+                                <a href="/admin/user/manage?status=1">正常用户</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/admin/user/manage?status=0">待审用户</a>
+                            </li>
+                            <li>
+                                <a href="/admin/user/manage?status=2">审核不通过</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a data-target="#" href="/admin/option" data-toggle="dropdown" class="dropdown-toggle"> 站点管理 <b class="caret"></b>
+                        </a>
+                        <ul id="site-menu" class="dropdown-menu">
+                            <li>
+                                <a href="/admin/option">站点基本设置</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="/init-memcache" target="_blank">更新memcache</a>
+                            </li>
+                            <li>
+                                <a href="/init" target="_blank">更新无高度图片高度</a>
+                            </li>
+                            <li>
+                                <a href="/import" target="_blank">导入数据</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="">
+                        <a href="/admin/user/change-password">修改密码</a>
+                    </li>
+                    <li class="">
+                        <a href="/admin/log-out">退出登录</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

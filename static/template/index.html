@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}{% if 1!=pagenavi.current %}第{{ pagenavi.current }}页 - {% endif %}{{ super() }}{% endblock %}
+
+{% block content %}
+<div id="wrapper" class="clearfix">
+    <div id="cate" data-type="index" data-name="index"></div>
+    <div id="container">
+        {% include "tags.html" %}
+        {% for entry in entries %}
+        <div id="post-{{ entry.id }}" class="post-home items page-{{ pagenavi.current }}">
+            <div class="post-thumbnail">
+                <a class="img" href="{{ handler.site_url }}show/{{ entry.id }}" target="_blank">
+                    {% if pagenavi.current == 1 %}
+                    <img src="{% if loop.index<4 %}{{ entry.thumbnail_pic }}{% else %}http://chairo.sinaapp.com/image/blank.gif{% endif %}" data-src="{{ entry.bmiddle_pic }}" width="255" height="{{ entry.height }}" alt="{{ entry.user_name }}:{{ entry.text|urlfilter }}#{{ handler.app_title }}#"/>
+                    {% else %}
+                    <img src="{{ entry.bmiddle_pic }}" width="255" height="{{ entry.height }}" alt="{{ entry.user_name }}:{{ entry.text|urlfilter }}#{{ handler.app_title }}#"/>
+                    {% endif %}
+                </a>
+                <div class="post-suggestion" style="top: {{ entry.height-22 }}px;">点击图片查看清晰大图</div>
+            </div>
+            <div class="post-title"> <strong>{{ entry.user_name }}</strong>
+                @
+                <span>{{ entry.create_date }}</span>
+            </div>
+            <div class="post-info">
+                <a href="{{ handler.site_url }}show/{{ entry.id }}" target="_blank">{{ entry.text|urlfilter }}</a>
+                <br/>
+                <div class="views">
+                    <span>{{ entry.views }}</span>
+                </div>
+                <!--div class="comments">
+                <span>{{ entry.comments }}</span>
+            </div-->
+            <div class="likes">
+                <span class="wizylike_icon" id="wizylike-post-{{ entry.id }}"></span>
+                <span id="wizylike-{{ entry.id }}-count">{{ entry.likes }}</span>
+            </div>
+            <br/>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div id="pagenavi">
+    {% if pagenavi.previous %}
+    <a href="/index/page/{{ pagenavi.previous }}" class='page-numbers previous'>上一页</a>
+    {% endif %}
+    <span class='page-numbers current'>{{ pagenavi.current }}</span>
+    {% if pagenavi.next %}
+    <a href="/index/page/{{ pagenavi.next }}" class='page-numbers next'>下一页</a>
+    {% endif %} 共 {{ pagenavi.count }} 页
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var _gaq = [['_setAccount', 'UA-32834613-1'], ['_setDomainName', 'au92.com'], ['_setAllowHash', 'false'], ['_trackPageview']];
+    Modernizr.load([
+    {
+        load:[BaseJsPath+'jquery-1.8.0.js?version=1.8.0'],
+        complete: function(){
+            Modernizr.load([{
+                load:[
+                      BaseJsPath+'jquery.masonry.min.js?version=2.5.3',
+                      BaseJsPath+'jquery.infinitescroll.min.js?version={{ handler.jsversion }}',
+                      BaseJsPath+'jquery.lazyload.min.js?version=1.7.2'],
+                complete: function(){                                       
+                    var $container = $('#container');
+
+                    $container.masonry({
+                        itemSelector: '.post-home'
+                    });
+                    {% if pagenavi.current==1 %}
+                    $('#container .page-{{ pagenavi.current }} img').lazyload({
+                        data_attribute: "src",
+                        effect: "fadeIn"
+                    });
+
+                    //无限滚动
+                    var i = {{ pagenavi.current }};
+                    $container.infinitescroll({
+                        navSelector: "#pagenavi",
+                        nextSelector: "#pagenavi a.next",
+                        itemSelector: ".post-home.items",
+                        debug: true,
+                        dataType: 'html',
+                        loading: {
+                          msgText: "<em>正在加载下一页{{ handler.app_title }}</em>",
+                          finishedMsg: "<em>没有更多的{{ handler.app_title }}了</em>",
+                          img: '{{ handler.static_url }}img/ajax-loader.gif'
+                        },
+                        state: {
+                            currPage: {{ pagenavi.current }}
+                        },
+                        errorCallback: function() {
+                            $('#infscr-loading').animate({opacity: .8},2000).fadeOut('normal');
+                        }},
+                        function(newElements) {
+                            i++;
+                            //if(i>=10){$('#pagenavi').fadeIn();$container.infinitescroll('pause');}
+                            $container.masonry('appended', $(newElements), true);
+                       });
+                       {% endif %}
+                }
+            }]);
+            $("#go-to-top").click(function(){
+                $("html, body").animate({'scrollTop': 0}, 400);
+                return false;
+            });
+            $(window).scroll(function() {
+                var top = $(document).scrollTop();
+                var g = $("#go-to-top");
+                if (top > 300 && g.is(":hidden")) {
+                    g.fadeIn("slow");
+                } else if(top < 300 && g.is(":visible")) {
+                    g.fadeOut();
+                }
+           });
+        }
+    }
+    ]);
+
+</script>
+{% endblock %}

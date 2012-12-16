@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}{% if entry %}{{ entry.text|truncate(20, True, '') }}-{% endif %}{{ super() }}{% endblock %}
+
+{% block SEO %}
+<meta name="keywords" content="{% if entry %}{{ entry.user_name }},{% endif %}旅行,旅游,图片,旅游美图,旅行图片" />
+<meta name="description" content="{{ entry.text|urlfilter }}" />
+{% endblock %}
+
+{% block style %}
+<style type="text/css">
+.single .single-post img {
+    max-width:750px;
+    width:expression(this.width > 750? "750":true);
+    overflow:hidden;;
+}
+.single .single-post .no-entry{padding:20px;}
+#ds-thread{padding:14px;}
+.ds-meta{display: none;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="single single-post single-format-standard">
+    <div id="wrapper" class="clearfix">
+        <div id="single-content">
+            <div id="post-home" class="clearfix">
+                {% if not entry %}
+                <div class="post-content">
+                    <p class="no-entry"> <strong>没找到这条记录</strong>
+                    </p>
+                </div>
+                {%else%}
+                <div class="post-content">
+                    <div id="img" data-id="{{ entry.id }}">
+                        <div id="img-loading"></div>
+                        <a id="img-left" {% if nav.prev %}href="/show/{{ nav.prev.id }}" title="查看上一张图片"{%else%}title="前面没有了"{%endif%}></a>
+                        <a id="img-right" {% if nav.next %}href="/show/{{ nav.next.id }}" title="查看下一张图片"{%else%}title="后面没有了"{%endif%}></a>
+                        <p>
+                            <img src="{{ entry.original_pic }}" title="{{ entry.user_name }}:{{ entry.text|urlfilter }}#{{ handler.app_title }}#" alt="{{ entry.user_name }}:{{ entry.text|urlfilter }}#{{ handler.app_title }}#"/>
+                        </p>
+                    </div>
+                </div>
+
+                {% endif %}
+                <div class="ds-thread"></div>
+                <script type="text/javascript">
+    var duoshuoQuery = {short_name:"liuxiaofang"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = 'http://static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+                <div id="comments">
+                    <ol class="commentlist">
+                    {% for comment in comments %}
+                        <li class="comment odd alt thread-odd thread-alt depth-1" id="li-comment-21" >
+                            <div id="comment-21" class="comment-body">
+                                <div class="commentmetadata">@{{ comment.create_date }}</div>
+                                <div class="vcard">
+                                    <span class='url'><strong>{{ comment.user_name }}</strong></span>
+                                </div>
+                                <p>{{ comment.text|urlfilter }}</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+        {# sidebar BOF #}
+        <div id="sidebar">
+            <div id="sidebar-inner">
+                <div class="post-msg2">
+                    <ul>
+                        <li>
+                            <div class="nav-previous">
+                                {% if nav.prev %}
+                                <a rel="prev" href="/show/{{ nav.prev.id }}" title="查看上一张图片">
+                                    <span class="meta-nav-previous"></span>
+                                </a>
+                                {%endif%}
+                            </div>
+                        </li>
+                        <li>
+                            <div class="nav-next">
+                                {% if nav.next %}
+                                <a rel="next" href="/show/{{ nav.next.id }}" title="查看下一张图片">
+                                    <span class="meta-nav-next"></span>
+                                </a>
+                                {%endif%}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="post-msg2">
+                    <ul>
+                        <li>
+                            <span>
+                                <span>{{ entry.views }}</span>
+                            </span>
+                            <span class="meta">views</span>
+                        </li>
+                        <li>
+                            <div id="wizylike-post-642" class="likes">
+                                <span class="wizylike_count" id="wizylike-{{ entry.id }}-count">{{ entry.likes }}</span>
+                                <span class="wizylike_icon">&nbsp;</span>
+                            </div>
+                            <span id="wizylike-post-{{ entry.id }}" class="meta">likes</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sidebar-inner clearfix">
+                    <div id="popular" class="widgets">
+                        <h2>最受欢迎</h2>
+                        <ul class="clearfix">
+                            {% for entry in sidebar_mostlikes %}
+                            <li>
+                                <a class="img" href="/show/{{ entry.id }}#single-content">
+                                    <img src="{{ entry.thumbnail_pic }}" height="60" art="{{ entry.user_name }}:{{ entry.text }}"/>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {# sidebar EOF #}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var _gaq = [['_setAccount', 'UA-32834613-1'], ['_setDomainName', 'au92.com'], ['_setAllowHash', 'false'], ['_trackPageview']];
+    Modernizr.load([
+    {
+        load:[BaseJsPath+'jquery.min.js?version=1.8.0'],
+        complete: function(){
+            $('#wizylike-post-{{ entry.id }}').on('click', function(){
+                $('#wizylike-{{ entry.id }}-count').html(parseInt($('#wizylike-{{ entry.id }}-count').html())+1);
+                $.ajax({
+                    url: '/like',
+                    type: 'post',
+                    data: {
+                        id:{{ entry.id }}
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                    }
+                });
+            });
+            $('#wizylike-{{ entry.id }}-count').on('click', function(){$('#wizylike-post-{{ entry.id }}').click();});
+
+            $("#go-to-top").on('click', function(){
+                $("html, body").animate({'scrollTop': 0}, 400);
+                return false;
+            });
+            $(window).scroll(function() {
+                var top = $(document).scrollTop();
+                var g = $("#go-to-top");
+                if (top > 300 && g.is(":hidden")) {
+                    g.fadeIn();
+                } else if(top < 300 && g.is(":visible")) {
+                    g.fadeOut();
+                }
+            });
+
+        }
+    }
+    ]);
+</script>
+{# comment BOF
+<script src="http://t.70e.com/t.asp?u=44213&t=3&m=0&n=588,618,520,482,498" charset="gb2312"></script>
+comment EOF #}
+{% endblock %}

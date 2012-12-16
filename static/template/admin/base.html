@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{{ handler.app_title }}{% endblock %}</title>
+        <link href="{{ handler.static_url }}style/admin/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ handler.static_url }}style/admin/bootstrap-responsive.min.css" rel="stylesheet">
+        <!--[if IE 6]>
+            <link href="{{ handler.static_url }}style/admin/ie6.min.css" rel="stylesheet">
+        <![endif]-->
+        <link href="{{ handler.static_url }}style/admin/style.css" rel="stylesheet">
+        {% block style %}{% endblock %}
+        <script src="{{ handler.static_url }}js/modernizr.min.js?version=2.1.04"></script>
+    </head>
+    <body class="preview" data-offset="50" data-target=".subnav" data-spy="scroll">
+    {# nav BOF #}
+        {% block nav %}{% include 'admin/nav.html' %}{% endblock %}
+    {# nav EOF #}
+
+    {# container BOF #}
+    <div class="container-fluid">
+        {% block content %}{% endblock %}
+        {% block footer %}{% include 'admin/footer.html' %}{% endblock %}
+    </div>
+    {# container EOF #}
+
+    <script type="text/javascript">var BaseJsPath = '{{ handler.static_url }}js/';</script>
+
+    {% block script %}{% endblock %}
+
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>{% block title %}带上猫咪去旅行{% endblock %}</title>
+{% block SEO %}
+<meta name="keywords" content="旅行,旅游,游记,旅行图片站,旅游美图" />
+<meta name="description" content="旅行图片集合" />
+{% endblock %}
+<link rel="shortcut icon" href="/static/img/favicon.ico" />
+<link rel="stylesheet" href="{{ handler.static_url }}style/style.min.css" type="text/css" media="screen" />
+{% block style %}{% endblock %}
+<style type="text/css">
+.recentcomments a {
+	display: inline !important;
+	padding: 0 !important;
+	margin: 0 !important;
+}
+</style>
+<script src="http://liuxiaofang.sinaapp.com/static/js/modernizr.min.js?version=2.1.04"></script>
+<meta property="wb:webmaster" content="b81ebbff9c9b7a3b" />
+</head>
+<body class="home blog">
+{% block header %}{% include 'header.html' %}{% endblock %}
+{% block content %}{% endblock %}
+{% block footer %}{% include 'footer.html' %}{% endblock %}
+<script type="text/javascript">var BaseJsPath = '{{ handler.static_url }}js/';</script>
+{% block script %}{% endblock %}
+<script type="text/javascript">
+Modernizr.load([
+    {load: 'http://hm.baidu.com/h.js?c543906a5a2d7ab280949fb3ddb0842c'},
+    {load:'http://tajs.qq.com/stats?sId=14102654'},
+    {load: 'http://www.google-analytics.com/ga.js'}
+]);
+</script>
+</body>
+</html>

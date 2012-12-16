@@ -1,0 +1,179 @@
+{% extends "admin/base.html" %}
+
+
+{% block style %}
+<style type="text/css">#pagenavi{text-align:center}#pagenavi .page-numbers{color:#666;display:inline-block;margin-right:5px;line-height:20px;padding:0 6px;text-decoration:none;text-shadow:0 1px 0 #fff;border:1px solid #c4c6ca;text-decoration:none;background-color:#f0f0f0}#pagenavi span.current,#pagenavi a:hover{background-color:#fff;-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);border:1px solid #c3c3c3;-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5);-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5)}#pagenavi a:active{-webkit-box-shadow:0 1px 2px rgba(0,0,0,0.1) inset;-moz-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;-ms-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;-o-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;box-shadow:0 1px 2px rgba(0,0,0,0.2) inset}
+body {padding-top: 60px;padding-bottom: 40px;}.sidebar-nav {padding: 9px 0;}.action{padding-top: 11px;}#go-to-top{background:none repeat scroll 0 0 #DDDDDD;border-radius:5px 5px 5px 5px;bottom:100px;color:#000000;display:none;font:36px/18px Helvetica,Arial,Verdana,sans-serif;opacity:0.8;outline:0 none;padding:18px;position:fixed;right:60px;text-decoration:none;text-shadow:0 0 1px #DDDDDD;vertical-align:baseline;}</style>
+{% endblock %}
+
+{% block title %}图片管理 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div>
+    <header class="jumbotron subhead">
+      <h2>{% if "0"==query.status %}回收站{% elif "1"==query.status%}审核通过图片{% else %}待审核图片{% endif %}</h2>
+      <div id="pagenavi" class="subnav action">
+        {% if "0"==query.status or "2"==query.status %}
+        <button id="pass" class="btn btn-success">通过审核</button>
+        {% endif %}
+        {% if "1"==query.status %}
+        <a target="_blank" href="http://www.baidu.com" id="init_comments" class="btn">获取评论</a>{% endif %}
+        <span id="pages">
+          {% if pagenavi.previous %}
+          <a href="/admin/page/{{ pagenavi.previous }}{% if pagenavi.param %}?{{ pagenavi.param }}{% endif %}" class='page-numbers previous'>上一页</a>
+          {% endif %}
+          <span class='page-numbers current'>{{ pagenavi.current }}</span>
+          {% if pagenavi.next %}
+          <a href="/admin/page/{{ pagenavi.next }}{% if pagenavi.param %}?{{ pagenavi.param }}{% endif %}" class='page-numbers next'>下一页</a>
+          {% endif %}
+         共 {{ pagenavi.count }} 页
+        </span>
+        {% if "2"==query.status or "1"==query.status %}
+        <button id="delete" class="btn btn-danger">扔进回收站</button>
+        {% endif %}{% if "0"==query.status  %}
+        <button id="clean" class="btn btn-danger">清空回收站</button>
+        {% endif %}
+      </div>
+    </header>
+    <div class="well">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" id="checkAll"/>
+            </th>
+            <th>发布人</th>
+            <th>微博内容</th>
+            <th>预览</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr>
+            <td width="9%">
+              <input type="checkbox" class="check" name="ids" id="item{{ entry.id }}" value="{{ entry.id }}" onclick="checkItem();"/>
+            </td>
+            <td width="20%">
+              {{ entry.user_name }}
+              <br/>
+              {{ entry.create_date }}
+            </td>
+            <td width="55%">{{ entry.text }}</td>
+            <td>
+              <a href="{{ entry.bmiddle_pic }}" target="_blank">
+                <img src="{{ entry.thumbnail_pic }}"/>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+Modernizr.load({
+    load:[BaseJsPath+'jquery.min.js'],
+    complete: function(){
+        Modernizr.load([
+        { {# 加载bootstrap及ie6补丁 #}
+            load: [BaseJsPath+'admin/bootstrap.min.js?version=2.0.4',
+                   BaseJsPath+'admin/ie6.min.js?version=1.0'
+                  ]
+        },
+        { {# 加载pub.js #}
+            load: BaseJsPath+'admin/pub.js?version={{ handler.jsversion }}'
+        }
+        ]);
+
+        var $win = $(window)
+          , $nav = $('.subnav')
+          , navHeight = $('.navbar').first().height()
+          , navTop = $('.subnav').length && $('.subnav').offset().top - navHeight
+          , isFixed = 0
+
+        processScroll()
+
+        $win.on('scroll', processScroll)
+
+        function processScroll() {
+          var i, scrollTop = $win.scrollTop()
+          if (scrollTop >= navTop && !isFixed) {
+            isFixed = 1
+            $nav.addClass('subnav-fixed')
+          } else if (scrollTop <= navTop && isFixed) {
+            isFixed = 0
+            $nav.removeClass('subnav-fixed')
+          }
+        }
+
+        $('#init_comments').click(function(){
+          $(this).attr('href', '/init-comments?ids='+getCheckboxValue('ids').toString()).click();
+        });
+
+        $('#delete').on('click', function(){
+            {# 扔到回收站 #}
+
+            $.ajax({
+                url: '/admin',
+                type: 'post',
+                data: {
+                    action: 'delete',
+                    ids: getCheckboxValue('ids').toString()
+                },
+                dataType: "json",
+                success: function(data) {
+                    if(data.delete){
+                      load_location();
+                    }else{
+                      alert(data.message);
+                    }
+                }
+            });
+        });
+        $('#clean').on('click', function(){
+            {# 清空回收站 #}
+            $.ajax({
+                url: '/admin',
+                type: 'post',
+                data: {
+                    action: 'clean'
+                },
+                dataType: "json",
+                success: function(data) {
+                    if(data.clean){
+                      load_location();
+                    }else{
+                      alert(data.message);
+                    }
+                }
+            });
+        });
+
+        $('#pass').on('click', function(){
+            {# 通过审核 #}
+            $.ajax({
+                url: '/admin',
+                type: 'post',
+                data: {
+                    action: 'pass',
+                    ids: getCheckboxValue('ids').toString()
+                },
+                dataType: "json",
+                success: function(data) {
+                    if(data.pas){
+                      load_location();
+                    }else{
+                      alert(data.message);
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

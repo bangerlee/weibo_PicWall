@@ -1,0 +1,183 @@
+{% extends "admin/base.html" %}
+
+
+{% block style %}
+<style type="text/css">#pagenavi{text-align:center}#pagenavi .page-numbers{color:#666;display:inline-block;margin-right:5px;line-height:20px;padding:0 6px;text-decoration:none;text-shadow:0 1px 0 #fff;border:1px solid #c4c6ca;text-decoration:none;background-color:#f0f0f0}#pagenavi span.current,#pagenavi a:hover{background-color:#fff;-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);border:1px solid #c3c3c3;-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5);-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5)}#pagenavi a:active{-webkit-box-shadow:0 1px 2px rgba(0,0,0,0.1) inset;-moz-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;-ms-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;-o-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;box-shadow:0 1px 2px rgba(0,0,0,0.2) inset}
+body {padding-top: 60px;padding-bottom: 40px;}.sidebar-nav {padding: 9px 0;}.action{padding-top: 11px;}#go-to-top{background:none repeat scroll 0 0 #DDDDDD;border-radius:5px 5px 5px 5px;bottom:100px;color:#000000;display:none;font:36px/18px Helvetica,Arial,Verdana,sans-serif;opacity:0.8;outline:0 none;padding:18px;position:fixed;right:60px;text-decoration:none;text-shadow:0 0 1px #DDDDDD;vertical-align:baseline;}</style>
+{% endblock %}
+
+{% block title %}黑名单管理 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div>
+    <header class="jumbotron subhead">
+      <h2>{% if "1"==query.type %}关键词{% else %}用户ID{% endif %}</h2>
+      <div id="pagenavi" class="subnav action">
+        <form class="form-search">
+          <button data-toggle="modal" href="#myModal" type="button" class="btn btn-success">新增黑名单</button>
+          <button id="delete" type="button" class="btn btn-danger">删除</button>
+          <span id="pages">
+            {% if pagenavi.previous %}
+            <a href="/admin/black/page/{{ pagenavi.previous }}{% if pagenavi.param %}?{{ pagenavi.param }}{% endif %}" class='page-numbers previous'>上一页</a>
+            {% endif %}
+            <span class='page-numbers current'>{{ pagenavi.current }}</span>
+            {% if pagenavi.next %}
+            <a href="/admin/black/page/{{ pagenavi.next }}{% if pagenavi.param %}?{{ pagenavi.param }}{% endif %}" class='page-numbers next'>下一页</a>
+            {% endif %}
+         共 {{ pagenavi.count }} 页
+          </span>
+          <input class="input-medium search-query" name="search_text" id="search_text" type="text" placeholder="搜索" />
+          <button type="button" class="btn" id="search">搜索黑名单</button>
+        </form>
+      </div>
+    </header>
+    <div class="well">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>
+              <input type="checkbox" id="checkAll"/>
+            </th>
+            <th>黑名单</th>
+            <th>加入时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr>
+            <td width="9%">
+              <input type="checkbox" class="check" name="ids" id="item{{ entry.id }}" value="{{ entry.id }}" onclick="checkItem();"/>
+            </td>
+            <td width="70%">{{ entry.value }}</td>
+            <td>{{ entry.create_time }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="modal hide fade" id="myModal">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>新增黑名单</h3>
+  </div>
+  <div class="modal-body">
+    <form class="form-horizontal well">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="txtValue">黑名单</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtValue" id="txtValue">
+            <p class="help-block">请输入黑名单内容</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="sltType">类型</label>
+          <div class="controls">
+            <select name="sltType" id="sltType">
+              <option value="1">关键词</option>
+              <option value="0">UID</option>
+            </select>
+            <p class="help-block">请选择黑名单类型</p>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">关闭</a>
+    <button type="button" class="btn btn-primary" id="add">确认提交</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+Modernizr.load({
+    load:BaseJsPath+'jquery.min.js?version=1.8.0',
+    complete: function(){
+        Modernizr.load([
+        { {# 加载bootstrap及ie6补丁 #}
+            load: [BaseJsPath+'admin/bootstrap.min.js?version=2.0.4',
+                   BaseJsPath+'admin/ie6.min.js?version=1.0'
+                  ]
+        },
+        { {# 加载pub.js #}
+            load: BaseJsPath+'admin/pub.js?version={{ handler.jsversion }}'
+        }
+        ]);
+
+        var $win = $(window)
+          , $nav = $('.subnav')
+          , navHeight = $('.navbar').first().height()
+          , navTop = $('.subnav').length && $('.subnav').offset().top - navHeight
+          , isFixed = 0
+
+        processScroll()
+
+        $win.on('scroll', processScroll)
+
+        function processScroll() {
+          var i, scrollTop = $win.scrollTop()
+          if (scrollTop >= navTop && !isFixed) {
+            isFixed = 1
+            $nav.addClass('subnav-fixed')
+          } else if (scrollTop <= navTop && isFixed) {
+            isFixed = 0
+            $nav.removeClass('subnav-fixed')
+          }
+        }
+
+        $('#search').on('click', function(){
+            {# 搜索 #}
+            load_url(window.location.href+'&search='+$('#search_text').val());
+        });
+
+        $('#delete').on('click', function(){
+            {# 删除记录 #}
+            $.ajax({
+                url: '/admin/black',
+                type: 'post',
+                data: {
+                    action: 'deleted',
+                    ids: getCheckboxValue('ids').toString()
+                },
+                dataType: "json",
+                success: function(data) {
+                    if(data.deleted){
+                      load_location();
+                    }else{
+                      alert(data.message);
+                    }
+                }
+            });
+        });
+
+        $('#add').on('click', function(){
+            {# 添加黑名单 #}
+            $.ajax({
+                url: '/admin/black',
+                type: 'post',
+                data: {
+                    action: 'add',
+                    value: $('#txtValue').val(),
+                    type: $('#sltType').val()
+                },
+                dataType: "json",
+                success: function(data) {
+                    if(data.added){
+                      $('#myModal').modal('hide');
+                      load_location();
+                    }else{
+                      alert(data.message);
+                    }
+                }
+            });
+        });
+
+    }
+});
+</script>
+{% endblock %}

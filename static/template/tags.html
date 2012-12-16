@@ -1,0 +1,6 @@
+<div id="post-tags" class="post-home clearfix">
+    <h2>最近发布</h2>
+    {% for entry in entries %}
+    <a href='/show/{{ entry.id }}' class='tag-link-{{ entry.id }}' title='{{ entry.user_name }}' style='font-size: 10pt;'>{{ entry.user_name|truncate(6, True, '')|e }}</a>
+    {% endfor %}
+</div>

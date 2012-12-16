@@ -1,0 +1,121 @@
+{% extends "admin/base.html" %}
+
+
+{% block style %}
+<style type="text/css">#pagenavi{text-align:center}#pagenavi .page-numbers{color:#666;display:inline-block;margin-right:5px;line-height:20px;padding:0 6px;text-decoration:none;text-shadow:0 1px 0 #fff;border:1px solid #c4c6ca;text-decoration:none;background-color:#f0f0f0}#pagenavi span.current,#pagenavi a:hover{background-color:#fff;-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);box-shadow:inset 0 1px 0 rgba(255,255,255,0.3);border:1px solid #c3c3c3;-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5);-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 rgba(215,238,239,.5)}#pagenavi a:active{-webkit-box-shadow:0 1px 2px rgba(0,0,0,0.1) inset;-moz-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;-ms-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;-o-box-shadow:0 1px 2px rgba(0,0,0,0.2) inset;box-shadow:0 1px 2px rgba(0,0,0,0.2) inset}
+body {padding-top: 60px;padding-bottom: 40px;}.sidebar-nav {padding: 9px 0;}.action{padding-top: 11px;}#go-to-top{background:none repeat scroll 0 0 #DDDDDD;border-radius:5px 5px 5px 5px;bottom:100px;color:#000000;display:none;font:36px/18px Helvetica,Arial,Verdana,sans-serif;opacity:0.8;outline:0 none;padding:18px;position:fixed;right:60px;text-decoration:none;text-shadow:0 0 1px #DDDDDD;vertical-align:baseline;}</style>
+{% endblock %}
+
+{% block title %}站点基本设置 - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div>
+    <form class="form-horizontal well">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="txtSitename">站点名称</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtSitename" id="txtSitename">
+            <p class="help-block">请输入站点名称</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="txtSiteurl">站点URL</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtSiteurl" id="txtSiteurl">
+            <p class="help-block">请输入站点完整URL必须以「<strong>/</strong>」结尾</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="txtAppkey">抓取数据APPKEY</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtAppkey" id="txtAppkey">
+            <p class="help-block">请输入抓取数据APPKEY（必须是<strong>通过审核</strong>的open.weibo.com应用的APPKEY）</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="txtKeywords">抓取关键词</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtKeywords" id="txtKeywords">
+            <p class="help-block">请输入抓取关键词（多个关键词用英文半角逗号「<strong>,</strong>」分开）</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="txtCommentAppkey">抓取评论APPKEY</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtCommentAppkey" id="txtCommentAppkey">
+            <p class="help-block">请输入抓取评论所用APPKEY</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="txtCommentSecret">抓取评论SECRET</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" name="txtCommentSecret" id="txtCommentSecret">
+            <p class="help-block">请输入抓取评论APPKEY对应SECRET</p>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="update">确认更新</button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+Modernizr.load({
+    load:[BaseJsPath+'jquery.min.js'],
+    complete: function(){
+        Modernizr.load([
+        { {# 加载bootstrap及ie6补丁 #}
+            load: [BaseJsPath+'admin/bootstrap.min.js?version=2.0.4',
+                   BaseJsPath+'admin/ie6.min.js?version=1.0'
+                  ]
+        },
+        { {# 加载pub.js #}
+            load: BaseJsPath+'admin/pub.js?version={{ handler.jsversion }}',
+            complete: function(){
+              {% if data %}
+                setValue('txtCommentSecret','{{data.comment_secret}}');
+                setValue('txtCommentAppkey','{{data.comment_appkey}}');
+                setValue('txtKeywords','{{data.keywords}}');
+                setValue('txtAppkey','{{data.appkey}}');
+                setValue('txtSiteurl','{{data.site_url}}');
+                setValue('txtSitename','{{data.site_name}}');
+              {% endif %}
+            }
+        }
+        ]);
+
+        $('#update').on('click', function(){
+            {# 更新站点基本信息 #}
+            $.ajax({
+                url: '/admin/option',
+                type: 'post',
+                data: {
+                    action: 'update',
+                    comment_secret: $('#txtCommentSecret').val(),
+                    comment_appkey: $('#txtCommentAppkey').val(),
+                    keywords: $('#txtKeywords').val(),
+                    appkey: $('#txtAppkey').val(),
+                    site_url: $('#txtSiteurl').val(),
+                    site_name: $('#txtSitename').val()
+                },
+                dataType: "json",
+                success: function(data) {
+                    if(data.done){
+                      load_location();
+                    }else{
+                      alert(data.message);
+                    }
+                }
+            });
+        });
+
+    }
+});
+</script>
+{% endblock %}

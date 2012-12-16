@@ -1,0 +1,85 @@
+{% extends "admin/base.html" %}
+
+{% block title %}登录 - {{ super() }}{% endblock %}
+
+{% block nav %}
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <button type="button"class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="{{ handler.site_url }}">{{ handler.app_title }}</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active">
+                        <a href="./admin/login">用户登陆</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<section id="login">
+    <div class="row">
+        <div class="span6 offset4">
+            <form class="well form-horizontal">
+                <fieldset><strong><legend id="labLogin">登录/注册</legend></strong>
+                    <div class="control-group">
+                        <label for="txtUsername" class="control-label">Email：</label>
+                        <div class="controls">
+                            <input type="text" maxlength="150" class="input-email" name="txtUsername" id="txtUsername">
+                            <p class="help-block">输入Email</p>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtPassword">密&nbsp;码：</label>
+                        <div class="controls">
+                            <input type="password" class="input-large" name="txtPassword" id="txtPassword">
+                            <p class="help-block" id="txtPasswordBlock">输入密码</p>
+                        </div>
+                    </div>
+                    <div class="control-group hide" id="divRePassword">
+                        <label class="control-label" for="txtRePassword">重复密码：</label>
+                        <div class="controls">
+                            <input type="password" class="input-large" name="txtRePassword" id="txtRePassword">
+                            <p class="help-block" id="txtRePasswordBlock">再次输入密码</p>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-primary" id="btnSubmit">登录</button>
+                        <button class="btn" type="reset" id="btnCancel">重新填写</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+Modernizr.load({
+    load:[BaseJsPath+'jquery.min.js?version=1.8.0'],
+    complete: function(){
+        Modernizr.load([
+        { {# 加载bootstrap及ie6补丁 #}
+            load: [BaseJsPath+'admin/bootstrap.min.js?version=2.0.4',
+                   BaseJsPath+'admin/ie6.min.js?version=1.0'
+                  ]
+        },
+        { {# 加载格式验证js、登陆判断脚本 #}
+            load: [BaseJsPath+'admin/validator.js?version={{ handler.jsversion }}',
+                   BaseJsPath+'admin/login.js?version={{ handler.jsversion }}'
+                  ]
+        }
+        ]);
+    }
+});
+</script>
+{% endblock %}
