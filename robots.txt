@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /admin
+Sitemap: http://meixong.au92.com/sitemap.xml
