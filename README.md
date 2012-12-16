@@ -1,4 +1,3 @@
-weibo_PicWall
-=============
-
-A Pinterest like picture wall for sina weibo
+新浪微博图片墙 1.0.0
+==================
+一个基于sae和新浪开放应用平台的图片网站，实现抓取新浪微博中的特定话题，展示相应微博图片及文本功能。
