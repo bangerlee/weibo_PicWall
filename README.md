@@ -47,6 +47,13 @@ web框架：python Bottle
 [python web框架bottle](http://bangerlee.blogspot.com/2012/12/python-webbottle.html)   
 [社会化评论系统“多说”](http://bangerlee.blogspot.com/2012/12/blog-post_10.html)   
 
+To do list
+==========
+1.查看清晰大图页面，最受欢迎一栏图片对齐   
+2.首页直接对条目“赞”功能   
+3.后台增加“添加用户”功能   
+   
+
 
 
 
