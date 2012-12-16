@@ -12,7 +12,7 @@
 
 部署
 ====
-###1.在sae上新建python应用，并开启MySQL和Memcache服务
-###2.上传以上代码至sae，在MySQL控制页面中将install.sql导入数据库
-###3.进入后台管理页面 http://xxx.sinaapp.com/admin，账户/密码 111@1.cn/111
-###4.点击 站点管理->站点基本设置 填写配置信息
+1.在sae上新建python应用，并开启MySQL和Memcache服务   
+2.上传以上代码至sae，在MySQL控制页面中将install.sql导入数据库   
+3.进入后台管理页面http://xxx.sinaapp.com/admin，账户/密码 111@1.cn/111   
+4.点击 站点管理->站点基本设置 填写配置信息   
