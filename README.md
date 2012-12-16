@@ -40,7 +40,7 @@ web框架：python Bottle
 评论系统：多说   
 网站监控：uptimerobot   
 
-###细节
+###实现细节
 以下链接需翻墙游览：   
 [新浪微博开放平台应用之数据抓取](http://bangerlee.blogspot.com/2012/12/blog-post.html)   
 [新浪微博开放平台应用之登录授权](http://bangerlee.blogspot.com/2012/12/blog-post_14.html)   
