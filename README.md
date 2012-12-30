@@ -6,7 +6,7 @@
 ====
 成功部署后，效果如下：   
 
-![效果图](http://7ats.sinaapp.com/img/1355650534yz1fXuW.png)   
+![效果图](http://7ats.sinaapp.com/img/13568604933COWaU.png)   
 
 点击 [http://liuxiaofang.sinaapp.com](http://liuxiaofang.sinaapp.com) 查看示例
 
@@ -21,7 +21,7 @@
 ###站点配置解释
 点击 站点管理->站点基本设置，将进入如下页面：  
 
-![站点配置](http://7ats.sinaapp.com/img/1355650457diBhz1f.png)   
+![站点配置](http://7ats.sinaapp.com/img/13568605057OImyp.png)   
    
 以上部分字段含义如下：   
 **抓取数据APPKEY** : 通过新浪微博开放平台审核的可用于数据抓取的app_key   
